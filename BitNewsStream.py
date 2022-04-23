@@ -1,6 +1,7 @@
 import pandas as pd
 import streamlit as st
 from PIL import Image
+
 from utils import utils
 
 
@@ -41,10 +42,10 @@ def load_text_generator():
 
 def generate_summary(sample_df, i):
     st.image(sample_df.iloc[i]['img_link'], width=500)
-    st.write(sample_df.iloc[i]['Title'])
+    st.write(sample_df.iloc[i]['title'])
     st.write(sample_df.iloc[i]['summary'])
     st.write("Source : " + (sample_df.iloc[i]['Source']))
-    st.write("Original Post : " + (sample_df.iloc[i]['link']))
+    st.write("Original Article : " + (sample_df.iloc[i]['link']))
     comp = 100 - round(len(sample_df.iloc[i]['summary']) * 100 / len(sample_df.iloc[i]['news']), 2)
     time_saved = len(sample_df.iloc[i]['news']) // 250 - len(sample_df.iloc[i]['summary']) // 250
     st.success(
@@ -79,52 +80,31 @@ def main():
             with col1:
                 st.image(sample_df.iloc[i]['img_link'], width=200)
             with col2:
-                st.subheader(sample_df.iloc[i]['Title'])
+                st.subheader(sample_df.iloc[i]['title'])
                 if i == 0:
                     b0 = st.button('Read More', key=i)
-                    if b0:
-                        utils.append_button_list(i)
                 elif i == 1:
                     b1 = st.button('Read More', key=i)
-                    if b1:
-                        utils.append_button_list(i)
                 elif i == 2:
                     b2 = st.button('Read More', key=i)
-                    if b2:
-                        utils.append_button_list(i)
                 elif i == 3:
                     b3 = st.button('Read More', key=i)
-                    if b3:
-                        utils.append_button_list(i)
                 elif i == 4:
                     b4 = st.button('Read More', key=i)
-                    if b4:
-                        utils.append_button_list(i)
                 elif i == 5:
                     b5 = st.button('Read More', key=i)
-                    if b5:
-                        utils.append_button_list(i)
                 elif i == 6:
                     b6 = st.button('Read More', key=i)
-                    if b6:
-                        utils.append_button_list(i)
                 elif i == 7:
                     b7 = st.button('Read More', key=i)
-                    if b7:
-                        utils.append_button_list(i)
                 elif i == 8:
                     b8 = st.button('Read More', key=i)
-                    if b8:
-                        utils.append_button_list(i)
                 elif i == 9:
                     b9 = st.button('Read More', key=i)
-                    if b9:
-                        utils.append_button_list(i)
 
             st.markdown("<hr />",
                         unsafe_allow_html=True)
         return sample_df
-
     else:
         sample_df = utils.get_df()
         if len(sample_df) == 0:
@@ -134,7 +114,7 @@ def main():
             with col1:
                 st.image(sample_df.iloc[i]['img_link'], width=200)
             with col2:
-                st.subheader(sample_df.iloc[i]['Title'])
+                st.subheader(sample_df.iloc[i]['title'])
                 if i == 0:
                     b0 = st.button('Read More', key=i)
                     if b0:
