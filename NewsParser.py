@@ -48,13 +48,13 @@ class NewsParser:
                 news = Article(article.url)
                 news.download()
                 news.parse()
-                if len(news.text) < 50 or len(article.url) == 0 or len(news.top_img) == 0:
+                if len(news.title) == 0 or len(news.text) < 50 or len(article.url) == 0 or len(news.top_img) == 0:
                     time.sleep(0.42)
                     continue
-                full_list.append([news.text, ", ".join(news.authors), article.url, news.top_img, self.source])
+                full_list.append([news.title, news.text, ", ".join(news.authors), article.url, news.top_img, self.source])
                 df = pd.DataFrame(full_list)
-                # df.columns = ["text", "authors", "url", "img", "source"]
-                df.to_csv("data/raw_news.csv", index=False, mode='a', header=False)
+                # df.columns = ["title", "text", "authors", "url", "img", "source"]
+                df.to_csv("data/raw_news_new.csv", index=False, mode='a', header=False)
                 full_list = []
                 num_articles += 1
                 if num_articles == 20:
@@ -66,7 +66,7 @@ class NewsParser:
 
 
 if __name__ == '__main__':
-    source_list = ["Verge", "CNN", "BBC", "CNN", "NYTimes", "Yahoo", "Forbes", "TechCrunch", "HollywoodReporter",
+    source_list = ["Verge", "CNN", "BBC", "NYTimes", "Yahoo", "Forbes", "TechCrunch", "HollywoodReporter",
                    "Reuters"]
     for source in source_list:
         print("Parsing News source : {}".format(source))
