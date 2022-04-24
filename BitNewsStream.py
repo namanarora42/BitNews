@@ -46,14 +46,17 @@ def generate_summary(sample_df, i):
     st.write(sample_df.iloc[i]['summary'])
     st.write("Source : " + (sample_df.iloc[i]['Source']))
     st.write("Original Article : " + (sample_df.iloc[i]['link']))
-    comp = 100 - round(len(sample_df.iloc[i]['summary']) * 100 / len(sample_df.iloc[i]['news']), 2)
+    comp = 100 - round(len(sample_df.iloc[i]['summary']) * 100 // len(sample_df.iloc[i]['news']), 2)
     time_saved = len(sample_df.iloc[i]['news']) // 250 - len(sample_df.iloc[i]['summary']) // 250
     st.success(
         "Length of original article : {} \n\n "
         "Length of summarized article : {} \n\n"
         "Compression : {}% \n\n "
+        "Similarity Score : {}\n\n"
         "You saved {} minutes".format(
-            len(sample_df.iloc[i]['news']), len(sample_df.iloc[i]['summary']), comp, time_saved)
+            len(sample_df.iloc[i]['news']), len(sample_df.iloc[i]['summary']), comp,
+            round(float(sample_df.iloc[i]['similarity']), 2),
+            time_saved)
     )
 
 
