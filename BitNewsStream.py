@@ -85,7 +85,7 @@ def main():
             num = st.sidebar.slider("No. of news articles", min_value=1, max_value=10, step=1)
 
         with st.sidebar.header("Time per article"):
-            time_spend = st.sidebar.slider("Maximum Time you want to spend per article", min_value=1, max_value=60,
+            time_spend = st.sidebar.slider("Maximum Time you want to spend per article", min_value=1, max_value=10,
                                            step=1)
         if st.sidebar.button('Summarize News'):
             sample_df = df[df['category'].isin(category) & df['Source'].isin(source)]
