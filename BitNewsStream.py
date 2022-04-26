@@ -13,7 +13,7 @@ def setup_streamlit():
     with col1:
         st.write(' ')
     with col2:
-        st.image(image, caption='News in 60 seconds or less')
+        st.image(image, caption='Bits of News That Matter')
     with col3:
         st.write(' ')
 
