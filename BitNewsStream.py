@@ -37,6 +37,11 @@ def setup_streamlit():
 def load_text_generator():
     df = pd.read_csv("data/processed_news.csv")
     df.drop_duplicates(inplace=True)
+
+    def f(x):
+        return int(len(x['news']) // 250 - len(x['summary']) // 250)
+
+    df['time_save'] = df.apply(lambda x: f(x), axis=1)
     return df
 
 
@@ -63,104 +68,115 @@ def generate_summary(sample_df, i):
 def main():
     setup_streamlit()
     df = load_text_generator()
-    col1, col2, col3 = st.columns([7, 4, 5])
-    with col1:
-        st.write(' ')
-    with col2:
-        news_button = st.button('Summarize News')
-    with col3:
-        st.write(' ')
+    try:
+        with st.sidebar.header("Category"):
+            category = st.sidebar.multiselect("Select News Category", df['category'].unique().tolist(),
+                                              default=df['category'].unique().tolist())
+            if category == 'All':
+                category = df['category'].unique().tolist()
 
-    st.markdown(
-        "<hr />",
-        unsafe_allow_html=True
-    )
-    if news_button:
-        sample_df = df.sample(n=10)
-        utils.append_df(sample_df)
-        for i in range(10):
-            col1, col2 = st.columns([2, 10])
-            with col1:
-                st.image(sample_df.iloc[i]['img_link'], width=200)
-            with col2:
-                st.subheader(sample_df.iloc[i]['title'])
-                if i == 0:
-                    b0 = st.button('Read More', key=i)
-                elif i == 1:
-                    b1 = st.button('Read More', key=i)
-                elif i == 2:
-                    b2 = st.button('Read More', key=i)
-                elif i == 3:
-                    b3 = st.button('Read More', key=i)
-                elif i == 4:
-                    b4 = st.button('Read More', key=i)
-                elif i == 5:
-                    b5 = st.button('Read More', key=i)
-                elif i == 6:
-                    b6 = st.button('Read More', key=i)
-                elif i == 7:
-                    b7 = st.button('Read More', key=i)
-                elif i == 8:
-                    b8 = st.button('Read More', key=i)
-                elif i == 9:
-                    b9 = st.button('Read More', key=i)
+        with st.sidebar.header("Source"):
+            source = st.sidebar.multiselect("Select News Source", df['Source'].unique().tolist(),
+                                            default=df['Source'].unique().tolist())
+            if source == 'All':
+                source = df['Source'].unique().tolist()
 
-            st.markdown("<hr />",
-                        unsafe_allow_html=True)
-        return sample_df
-    else:
-        sample_df = utils.get_df()
-        if len(sample_df) == 0:
-            return
-        for i in range(10):
-            col1, col2 = st.columns([2, 10])
-            with col1:
-                st.image(sample_df.iloc[i]['img_link'], width=200)
-            with col2:
-                st.subheader(sample_df.iloc[i]['title'])
-                if i == 0:
-                    b0 = st.button('Read More', key=i)
-                    if b0:
-                        generate_summary(sample_df, i)
-                elif i == 1:
-                    b1 = st.button('Read More', key=i)
-                    if b1:
-                        generate_summary(sample_df, i)
-                elif i == 2:
-                    b2 = st.button('Read More', key=i)
-                    if b2:
-                        generate_summary(sample_df, i)
-                elif i == 3:
-                    b3 = st.button('Read More', key=i)
-                    if b3:
-                        generate_summary(sample_df, i)
-                elif i == 4:
-                    b4 = st.button('Read More', key=i)
-                    if b4:
-                        generate_summary(sample_df, i)
-                elif i == 5:
-                    b5 = st.button('Read More', key=i)
-                    if b5:
-                        generate_summary(sample_df, i)
-                elif i == 6:
-                    b6 = st.button('Read More', key=i)
-                    if b6:
-                        generate_summary(sample_df, i)
-                elif i == 7:
-                    b7 = st.button('Read More', key=i)
-                    if b7:
-                        generate_summary(sample_df, i)
-                elif i == 8:
-                    b8 = st.button('Read More', key=i)
-                    if b8:
-                        generate_summary(sample_df, i)
-                elif i == 9:
-                    b9 = st.button('Read More', key=i)
-                    if b9:
-                        generate_summary(sample_df, i)
+        with st.sidebar.header("Number of articles"):
+            num = st.sidebar.slider("No. of news articles", min_value=1, max_value=10, step=1)
 
-            st.markdown("<hr />",
-                        unsafe_allow_html=True)
+        with st.sidebar.header("Time save per article"):
+            time_save = st.sidebar.slider("Minimum Time you want to save per article", min_value=0, max_value=60,
+                                          step=1)
+        if st.sidebar.button('Summarize News'):
+            sample_df = df[df['category'].isin(category) & df['Source'].isin(source)]
+            sample_df = sample_df[sample_df['time_save'] >= time_save]
+            sample_df = sample_df.sample(n=min(len(sample_df), num))
+            utils.append_df(sample_df)
+            for i in range(10):
+                col1, col2 = st.columns([2, 10])
+                with col1:
+                    st.image(sample_df.iloc[i]['img_link'], width=200)
+                with col2:
+                    st.subheader(sample_df.iloc[i]['title'])
+                    if i == 0:
+                        b0 = st.button('Read More', key=i)
+                    elif i == 1:
+                        b1 = st.button('Read More', key=i)
+                    elif i == 2:
+                        b2 = st.button('Read More', key=i)
+                    elif i == 3:
+                        b3 = st.button('Read More', key=i)
+                    elif i == 4:
+                        b4 = st.button('Read More', key=i)
+                    elif i == 5:
+                        b5 = st.button('Read More', key=i)
+                    elif i == 6:
+                        b6 = st.button('Read More', key=i)
+                    elif i == 7:
+                        b7 = st.button('Read More', key=i)
+                    elif i == 8:
+                        b8 = st.button('Read More', key=i)
+                    elif i == 9:
+                        b9 = st.button('Read More', key=i)
+
+                st.markdown("<hr />",
+                            unsafe_allow_html=True)
+            return sample_df
+        else:
+            sample_df = utils.get_df()
+            if len(sample_df) == 0:
+                return
+            for i in range(10):
+                col1, col2 = st.columns([2, 10])
+                with col1:
+                    st.image(sample_df.iloc[i]['img_link'], width=200)
+                with col2:
+                    st.subheader(sample_df.iloc[i]['title'])
+                    if i == 0:
+                        b0 = st.button('Read More', key=i)
+                        if b0:
+                            generate_summary(sample_df, i)
+                    elif i == 1:
+                        b1 = st.button('Read More', key=i)
+                        if b1:
+                            generate_summary(sample_df, i)
+                    elif i == 2:
+                        b2 = st.button('Read More', key=i)
+                        if b2:
+                            generate_summary(sample_df, i)
+                    elif i == 3:
+                        b3 = st.button('Read More', key=i)
+                        if b3:
+                            generate_summary(sample_df, i)
+                    elif i == 4:
+                        b4 = st.button('Read More', key=i)
+                        if b4:
+                            generate_summary(sample_df, i)
+                    elif i == 5:
+                        b5 = st.button('Read More', key=i)
+                        if b5:
+                            generate_summary(sample_df, i)
+                    elif i == 6:
+                        b6 = st.button('Read More', key=i)
+                        if b6:
+                            generate_summary(sample_df, i)
+                    elif i == 7:
+                        b7 = st.button('Read More', key=i)
+                        if b7:
+                            generate_summary(sample_df, i)
+                    elif i == 8:
+                        b8 = st.button('Read More', key=i)
+                        if b8:
+                            generate_summary(sample_df, i)
+                    elif i == 9:
+                        b9 = st.button('Read More', key=i)
+                        if b9:
+                            generate_summary(sample_df, i)
+
+                st.markdown("<hr />",
+                            unsafe_allow_html=True)
+    except Exception:
+        pass
 
 
 if __name__ == '__main__':
