@@ -39,9 +39,9 @@ def load_text_generator():
     df.drop_duplicates(inplace=True)
 
     def f(x):
-        return int(len(x['news']) // 250 - len(x['summary']) // 250)
+        return int(len(x['summary']) // 250)
 
-    df['time_save'] = df.apply(lambda x: f(x), axis=1)
+    df['time_per_art'] = df.apply(lambda x: f(x), axis=1)
     return df
 
 
@@ -84,12 +84,12 @@ def main():
         with st.sidebar.header("Number of articles"):
             num = st.sidebar.slider("No. of news articles", min_value=1, max_value=10, step=1)
 
-        with st.sidebar.header("Time save per article"):
-            time_save = st.sidebar.slider("Minimum Time you want to save per article", min_value=0, max_value=60,
-                                          step=1)
+        with st.sidebar.header("Time per article"):
+            time_spend = st.sidebar.slider("Maximum Time you want to spend per article", min_value=1, max_value=60,
+                                           step=1)
         if st.sidebar.button('Summarize News'):
             sample_df = df[df['category'].isin(category) & df['Source'].isin(source)]
-            sample_df = sample_df[sample_df['time_save'] >= time_save]
+            sample_df = sample_df[sample_df['time_per_art'] <= time_spend]
             sample_df = sample_df.sample(n=min(len(sample_df), num))
             utils.append_df(sample_df)
             for i in range(10):
