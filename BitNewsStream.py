@@ -195,3 +195,12 @@ def main():
 
 if __name__ == '__main__':
     main()
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.write(' ')
+    with col2:
+        st.markdown("""
+                    ###### Made with ❤️ and 🦙 by Aditya Bindra, Akshay Bahadur and Naman Arora
+                    """)
+    with col3:
+        st.write(' ')
